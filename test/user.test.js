@@ -1,35 +1,43 @@
 const app = require("../src/server.js");
 const supertest = require("supertest");
-const request = supertest(app)
+const request = supertest(app);
+
+let testUser = {
+    name: Math.random().toString(36).substring(7),
+    email: Math.random().toString(36).substring(7) + "@gmail.com",
+    password: Math.random().toString(36).substring(7)
+};
 
 beforeAll(async () => {
-    let emailGenerated = Math.random().toString(36).substring(7) + "@gmail.com";
-        let generatedName = Math.random().toString(36).substring(7);
-        let generatedPassword = Math.random().toString(36).substring(7);
-        let response = await request.post('/api/users').send({
-            name: generatedName,
-            email: emailGenerated,
-            password: generatedPassword
-        });
-        expect(response.statusCode).toBe(201);
+    const response = await request.post('/api/users').send(testUser);
+    expect(response.statusCode).toBe(201);
 });
 
 afterAll(async () => {
-    //remove all users
     await request.delete('/api/users');
-
 });
 
 describe('Create User', () => {
-    test('It should respond with a 201 status code', async () => {
-        
+    test('It should respond with a 400 status code (empty user)', async () => {
+        const user = { name: "", email: "", password: "" };
+        const response = await request.post('/api/users').send(user);
+        expect(response.statusCode).toBe(400);
     });
-    test('It should respond with a 400 status code', async () => {
-        const user= {name: "", email :"", password : ""};
-       return request.post('/api/users').send(user).then(response => {
-            expect(response.statusCode).toBe(400);
-        }).catch((err) => {
-            console.log(err.statusCode(500));
-        });
-    });   
-})
+});
+
+describe("retorn jwt", () => {
+    test('It should respond with a 200 status code (auth success)', async () => {
+        const response = await request.post('/api/users/auth').send(testUser);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.token).toBeDefined();
+    });
+
+    test('It should respond with a 400 status code (wrong password)', async () => {
+        const invalidUser = {
+            email: testUser.email,
+            password: "wrong_password"
+        };
+        const response = await request.post('/api/users/auth').send(invalidUser);
+        expect(response.statusCode).toBe(400);
+    });
+});
