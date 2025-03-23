@@ -15,5 +15,13 @@ describe('Create User', () => {
         expect(response.statusCode).toBe(201);
         
     });
+    test('It should respond with a 400 status code', async () => {
+        const user= {name: "", email :"", password : ""};
+       return request.post('/api/users').send(user).then(response => {
+            expect(response.statusCode).toBe(400);
+        }).catch((err) => {
+            console.log(err.statusCode(500));
+        });
+    });
         
 })

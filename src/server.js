@@ -30,6 +30,10 @@ const User = require('./model/User.js');
 
 
 app.post('/api/users', (req, res) => {
+  if (!req.body.name || !req.body.email || !req.body.password) {
+    return res.status(400).send('Please provide a name, email and password for the user');
+  }
+  
   const { name, email, password } = req.body;
   const user = new User({
     name,
