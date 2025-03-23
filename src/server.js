@@ -1,5 +1,6 @@
 const express = require('express');
 const  mongoose  = require('mongoose');
+const bcrypt = require('bcrypt');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
@@ -29,26 +30,21 @@ if (process.env.NODE_ENV !== 'test') {
 const User = require('./model/User.js');
 
 
-app.post('/api/users', (req, res) => {
-  if (!req.body.name || !req.body.email || !req.body.password) {
-    return res.status(400).send('Please provide a name, email and password for the user');
-  }
-  
+app.post('/api/users', async (req, res) => {  
   const { name, email, password } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(password, salt);
   const user = new User({
     name,
     email,
-    password
+    password: hashedPassword
   });
-  user.save()
-  .then(() => {
-    res.status(201).send(user);
+  try {
+    const savedUser = await user.save();
+    res.status(201).json(savedUser);
+  } catch (error) {
+    res.status(400).json(error);
   }
-  )
-  .catch((err) => {
-    console.log(err);
-  }
-  )
-    });
-
+}
+);
 module.exports = app;

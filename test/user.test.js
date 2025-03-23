@@ -2,6 +2,10 @@ const app = require("../src/server.js");
 const supertest = require("supertest");
 const request = supertest(app)
 
+beforeAll(async () => {
+    console.log('Jest starting!');
+});
+
 describe('Create User', () => {
     test('It should respond with a 201 status code', async () => {
         let emailGenerated = Math.random().toString(36).substring(7) + "@gmail.com";
