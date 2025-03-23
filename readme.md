@@ -1,5 +1,4 @@
 
-```markdown
 # Auth API Node
 
 Uma API RESTful simples de autenticação com cadastro e login de usuários, desenvolvida com Node.js, Express, MongoDB e JWT. Ideal para projetos que precisam de um sistema de autenticação básica com armazenamento seguro de senhas.
@@ -51,7 +50,7 @@ npm install
 
 # Crie o arquivo .env
 touch .env
-```
+
 
 Preencha o arquivo `.env` com as seguintes variáveis:
 
