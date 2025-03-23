@@ -47,4 +47,13 @@ app.post('/api/users', async (req, res) => {
   }
 }
 );
+
+app.delete('/api/users', async (req, res) => {
+  try {
+    await User.deleteMany();
+    res.status(204).send();
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 module.exports = app;

@@ -3,12 +3,7 @@ const supertest = require("supertest");
 const request = supertest(app)
 
 beforeAll(async () => {
-    console.log('Jest starting!');
-});
-
-describe('Create User', () => {
-    test('It should respond with a 201 status code', async () => {
-        let emailGenerated = Math.random().toString(36).substring(7) + "@gmail.com";
+    let emailGenerated = Math.random().toString(36).substring(7) + "@gmail.com";
         let generatedName = Math.random().toString(36).substring(7);
         let generatedPassword = Math.random().toString(36).substring(7);
         let response = await request.post('/api/users').send({
@@ -17,6 +12,16 @@ describe('Create User', () => {
             password: generatedPassword
         });
         expect(response.statusCode).toBe(201);
+});
+
+afterAll(async () => {
+    //remove all users
+    await request.delete('/api/users');
+
+});
+
+describe('Create User', () => {
+    test('It should respond with a 201 status code', async () => {
         
     });
     test('It should respond with a 400 status code', async () => {
@@ -26,6 +31,5 @@ describe('Create User', () => {
         }).catch((err) => {
             console.log(err.statusCode(500));
         });
-    });
-        
+    });   
 })
