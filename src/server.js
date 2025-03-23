@@ -26,8 +26,25 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
+const User = require('./model/User.js');
+
+
 app.post('/api/users', (req, res) => {
-    res.status(201).send(req.body);
+  const { name, email, password } = req.body;
+  const user = new User({
+    name,
+    email,
+    password
+  });
+  user.save()
+  .then(() => {
+    res.status(201).send(user);
+  }
+  )
+  .catch((err) => {
+    console.log(err);
+  }
+  )
     });
 
 module.exports = app;
